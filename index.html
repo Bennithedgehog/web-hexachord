@@ -29,6 +29,11 @@
             <language-selector :languages="Object.keys(allStrings)" v-model="language"></language-selector>
             <div v-cloak class="reset" @click="reset(language)">{{ strings.reset }}</div>
 
+            <div v-cloak class="chord-display">
+                <span v-if="chordName" class="chord-name">{{ chordName }}</span>
+                <span v-else class="chord-placeholder">Play some notes…</span>
+            </div>
+
             <div class="columns">
                 <div class="col-1" v-cloak>
                     <tonnetz-view :notes="notes"></tonnetz-view>

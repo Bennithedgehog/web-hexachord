@@ -91,6 +91,44 @@ proto = new Vue({
         },
         strings: function(){
             return strings[this.language]
+        },
+        chordName: function(){
+            const noteNames = ['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
+            const chordTypes = [
+                { intervals: [0,4,7],     name: 'Major' },
+                { intervals: [0,3,7],     name: 'Minor' },
+                { intervals: [0,3,6],     name: 'Diminished' },
+                { intervals: [0,4,8],     name: 'Augmented' },
+                { intervals: [0,4,7,11],  name: 'Major 7th' },
+                { intervals: [0,4,7,10],  name: 'Dom 7th' },
+                { intervals: [0,3,7,10],  name: 'Minor 7th' },
+                { intervals: [0,3,6,10],  name: 'Half-Dim 7th' },
+                { intervals: [0,3,6,9],   name: 'Dim 7th' },
+                { intervals: [0,3,7,11],  name: 'Minor-Major 7th' },
+                { intervals: [0,4,8,10],  name: 'Augmented 7th' },
+                { intervals: [0,2,7],     name: 'Sus2' },
+                { intervals: [0,5,7],     name: 'Sus4' },
+            ];
+
+            var active = this.notes
+                .map(function(n, i){ return n.count > 0 ? i : -1; })
+                .filter(function(i){ return i >= 0; });
+
+            if(active.length < 2) return active.length === 1 ? noteNames[active[0]] : null;
+
+            for(var r = 0; r < active.length; r++){
+                var root = active[r];
+                var normalized = active.map(function(i){ return (i - root + 12) % 12; }).sort(function(a,b){ return a-b; });
+                for(var c = 0; c < chordTypes.length; c++){
+                    var chord = chordTypes[c];
+                    if(chord.intervals.length === normalized.length &&
+                       chord.intervals.every(function(v, i){ return v === normalized[i]; })){
+                        return noteNames[root] + ' ' + chord.name;
+                    }
+                }
+            }
+
+            return active.map(function(i){ return noteNames[i]; }).join(' + ');
         }
     },
     created: function(){

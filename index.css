@@ -36,6 +36,10 @@ div { /* No reason for anything to be selectable */
 .languageSwitcher { cursor: pointer; position: fixed; top: 30px; left: 10px; font-size: 14px; color: #aaa; }
 .languageSwitcher div:hover { text-decoration: underline; }
 
+.chord-display { text-align: center; margin: 0 0 16px; min-height: 56px; display: flex; align-items: center; justify-content: center; }
+.chord-name { font-size: 40px; font-weight: 700; color: #323248; transition: opacity .15s; }
+.chord-placeholder { font-size: 20px; color: #ccc; font-style: italic; }
+
 .columns { display: flex; flex-wrap: wrap; justify-content: center; }
 .col-1 { max-width: 1000px; margin: 20px; flex: 3 1 450px; }
 .col-2 { max-width: 320px; margin: 20px; flex: 1 1 135px; }
