@@ -30,7 +30,10 @@
             <div v-cloak class="reset" @click="reset(language)">{{ strings.reset }}</div>
 
             <div v-cloak class="chord-display">
-                <span v-if="chordName" class="chord-name">{{ chordName }}</span>
+                <template v-if="chordName">
+                    <span class="chord-name">{{ chordName.name }}</span>
+                    <span v-if="chordName.intervals" class="chord-intervals">{{ chordName.intervals.join(' · ') }}</span>
+                </template>
                 <span v-else class="chord-placeholder">Play some notes…</span>
             </div>
 

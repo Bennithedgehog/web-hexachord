@@ -74,8 +74,8 @@ proto = new Vue({
                 //.and(function(){ proto.loaded(); }),
         // Azerty keyboard bindings
         ascii: JZZ.input.ASCII({
-                W:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5',
-                G:'F#5', B:'G5', H:'Ab5', N:'A5', J:'Bb5', M:'B5'
+                A:'C5', W:'C#5', S:'D5', E:'D#5', D:'E5', F:'F5',
+                T:'F#5', G:'G5', Z:'G#5', H:'A5', U:'A#5', J:'B5', K:'C6'
                 }),
         
         // Should trajectory drawing be active?
@@ -95,26 +95,58 @@ proto = new Vue({
         chordName: function(){
             const noteNames = ['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
             const chordTypes = [
-                { intervals: [0,4,7],     name: 'Major' },
-                { intervals: [0,3,7],     name: 'Minor' },
-                { intervals: [0,3,6],     name: 'Diminished' },
-                { intervals: [0,4,8],     name: 'Augmented' },
-                { intervals: [0,4,7,11],  name: 'Major 7th' },
-                { intervals: [0,4,7,10],  name: 'Dom 7th' },
-                { intervals: [0,3,7,10],  name: 'Minor 7th' },
-                { intervals: [0,3,6,10],  name: 'Half-Dim 7th' },
-                { intervals: [0,3,6,9],   name: 'Dim 7th' },
-                { intervals: [0,3,7,11],  name: 'Minor-Major 7th' },
-                { intervals: [0,4,8,10],  name: 'Augmented 7th' },
-                { intervals: [0,2,7],     name: 'Sus2' },
-                { intervals: [0,5,7],     name: 'Sus4' },
+                // Triads
+                { intervals: [0,4,7],        name: 'Major' },
+                { intervals: [0,3,7],        name: 'Minor' },
+                { intervals: [0,3,6],        name: 'Diminished' },
+                { intervals: [0,4,8],        name: 'Augmented' },
+                { intervals: [0,2,7],        name: 'Sus2' },
+                { intervals: [0,5,7],        name: 'Sus4' },
+                { intervals: [0,4,6],        name: 'Major ♭5' },
+                { intervals: [0,3,8],        name: 'Minor ♯5' },
+                // Power chord
+                { intervals: [0,7],          name: 'Power' },
+                // 6th chords
+                { intervals: [0,4,7,9],      name: 'Major 6th' },
+                { intervals: [0,3,7,9],      name: 'Minor 6th' },
+                // 7th chords
+                { intervals: [0,4,7,11],     name: 'Major 7th' },
+                { intervals: [0,4,7,10],     name: 'Dom 7th' },
+                { intervals: [0,3,7,10],     name: 'Minor 7th' },
+                { intervals: [0,3,7,11],     name: 'Minor-Major 7th' },
+                { intervals: [0,3,6,10],     name: 'Half-Dim 7th' },
+                { intervals: [0,3,6,9],      name: 'Dim 7th' },
+                { intervals: [0,4,8,10],     name: 'Aug 7th' },
+                { intervals: [0,4,8,11],     name: 'Aug Major 7th' },
+                { intervals: [0,4,6,11],     name: 'Major 7th ♭5' },
+                { intervals: [0,5,7,10],     name: '7sus4' },
+                { intervals: [0,2,7,10],     name: '7sus2' },
+                // Add chords
+                { intervals: [0,2,4,7],      name: 'Add9' },
+                { intervals: [0,2,3,7],      name: 'Minor Add9' },
+                { intervals: [0,4,5,7],      name: 'Add11' },
+                // 9th chords
+                { intervals: [0,2,4,7,11],   name: 'Major 9th' },
+                { intervals: [0,2,4,7,10],   name: 'Dom 9th' },
+                { intervals: [0,2,3,7,10],   name: 'Minor 9th' },
+                { intervals: [0,2,3,7,11],   name: 'Minor-Major 9th' },
+                { intervals: [0,2,4,7,9],    name: '6/9' },
+                { intervals: [0,2,5,7,10],   name: '9sus4' },
+                // 11th chords
+                { intervals: [0,2,4,5,7,10], name: 'Dom 11th' },
+                { intervals: [0,2,3,5,7,10], name: 'Minor 11th' },
+                { intervals: [0,2,4,5,7,11], name: 'Major 11th' },
+                // 13th chords
+                { intervals: [0,2,4,5,7,9,10],  name: 'Dom 13th' },
+                { intervals: [0,2,3,5,7,9,10],  name: 'Minor 13th' },
+                { intervals: [0,2,4,5,7,9,11],  name: 'Major 13th' },
             ];
 
             var active = this.notes
                 .map(function(n, i){ return n.count > 0 ? i : -1; })
                 .filter(function(i){ return i >= 0; });
 
-            if(active.length < 2) return active.length === 1 ? noteNames[active[0]] : null;
+            if(active.length < 2) return active.length === 1 ? { name: noteNames[active[0]], intervals: null } : null;
 
             for(var r = 0; r < active.length; r++){
                 var root = active[r];
@@ -123,12 +155,13 @@ proto = new Vue({
                     var chord = chordTypes[c];
                     if(chord.intervals.length === normalized.length &&
                        chord.intervals.every(function(v, i){ return v === normalized[i]; })){
-                        return noteNames[root] + ' ' + chord.name;
+                        return { name: noteNames[root] + ' ' + chord.name, intervals: normalized };
                     }
                 }
             }
 
-            return active.map(function(i){ return noteNames[i]; }).join(' + ');
+            var normalized = active.map(function(i){ return (i - active[0] + 12) % 12; }).sort(function(a,b){ return a-b; });
+            return { name: active.map(function(i){ return noteNames[i]; }).join(' + '), intervals: normalized };
         }
     },
     created: function(){

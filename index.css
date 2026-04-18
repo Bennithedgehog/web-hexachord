@@ -36,8 +36,9 @@ div { /* No reason for anything to be selectable */
 .languageSwitcher { cursor: pointer; position: fixed; top: 30px; left: 10px; font-size: 14px; color: #aaa; }
 .languageSwitcher div:hover { text-decoration: underline; }
 
-.chord-display { text-align: center; margin: 0 0 16px; min-height: 56px; display: flex; align-items: center; justify-content: center; }
-.chord-name { font-size: 40px; font-weight: 700; color: #323248; transition: opacity .15s; }
+.chord-display { text-align: center; margin: 0 0 16px; min-height: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.chord-name { font-size: 40px; font-weight: 700; color: #323248; }
+.chord-intervals { font-size: 20px; color: #aaa; letter-spacing: 4px; }
 .chord-placeholder { font-size: 20px; color: #ccc; font-style: italic; }
 
 .columns { display: flex; flex-wrap: wrap; justify-content: center; }
